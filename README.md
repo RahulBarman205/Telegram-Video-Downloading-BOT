@@ -6,8 +6,8 @@ In the bot private chat just use `/download <url>`
 
 ## Self hosting
 ```bash
-git clone https://github.com/ssebastianoo/yt-dlp-telegram
-cd yt-dlp-telegram
+git clone https://github.com/RahulBarman205/Telegram-Video-Downloading-BOT.git
+cd Telegram-Video-Downloading-BOT.git
 pip install -r requirements.txt
 ```
 create a `config.py` file and set the `token` variable to your bot token (check `example.config.py`)
