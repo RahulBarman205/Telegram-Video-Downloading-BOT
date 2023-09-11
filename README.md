@@ -1,13 +1,15 @@
-# Telegram-Video-Downloading-BOT
-Telegram bot that allows you to download videos from YouTube, Reddit and many other socials using [yt-dlp](https://github.com/yt-dlp/yt-dlp) 
+# YT-DLP Telegram Bot
+Telegram bot that allows you to download videos from YouTube, Twitter, Reddit and many other socials using [yt-dlp](https://github.com/yt-dlp/yt-dlp) 
+
+[Use the Bot](https://t.me/SatoruBot)
 
 ## Usage
-In the bot private chat just use `/download <url>`
+In the bot private chat just send the video url, otherwise use `/download <url>`
 
 ## Self hosting
 ```bash
-git clone https://github.com/RahulBarman205/Telegram-Video-Downloading-BOT.git
-cd Telegram-Video-Downloading-BOT
+git clone https://github.com/ssebastianoo/yt-dlp-telegram
+cd yt-dlp-telegram
 pip install -r requirements.txt
 ```
 create a `config.py` file and set the `token` variable to your bot token (check `example.config.py`)
