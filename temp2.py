@@ -1,9 +1,10 @@
 def join_channel():
-
     import logging
+    import sys
     import threading
     from telegram import Update
     from telegram.ext import Updater, CommandHandler, CallbackContext
+    from telegram.error import BadRequest
 
     # Enable logging
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -12,7 +13,7 @@ def join_channel():
     BOT_TOKEN = '6565741324:AAHn4lF4Ysx9AJYI2yfIscWhshzeov7DMZY'
 
     # List of channels that users need to join
-    REQUIRED_CHANNELS = ['@hapyhappyhappy', '@hellonigga69']  # Replace with your channel usernames
+    REQUIRED_CHANNELS = ['@giginigi', '@uwusenpai1234']  # Replace with your channel usernames
 
     # Event to signal the main thread to exit
     exit_event = threading.Event()
@@ -23,10 +24,13 @@ def join_channel():
     def check_channels(updater: Updater, user_id: int):
         user_channels = []
         for channel_username in REQUIRED_CHANNELS:
-            channel_member = updater.bot.get_chat_member(chat_id=channel_username, user_id=user_id)
-            if channel_member.status == "member":
-                user_channels.append(channel_username)
-                user_joined_channels[user_id] = user_channels
+            try:
+                channel_member = updater.bot.get_chat_member(chat_id=channel_username, user_id=user_id)
+                if channel_member.status == "member":
+                    user_channels.append(channel_username)
+            except BadRequest as e:
+                # Handle user not found or other errors gracefully
+                logging.warning(f"Error checking membership for user {user_id} in channel {channel_username}: {e}")
 
         return user_channels
 
@@ -70,5 +74,3 @@ def join_channel():
     # Main thread will continue running other tasks
     while not exit_event.is_set():
         pass
-
-
