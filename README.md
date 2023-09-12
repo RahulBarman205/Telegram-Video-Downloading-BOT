@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 create a `config.py` file and set the `token` variable to your bot token (check `example.config.py`)
 ```py
-python3 temp_main.py
+python temp_main.py
 ```
 
 **The Telegram API limits files sent by bots to 50mb**
