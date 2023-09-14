@@ -13,7 +13,7 @@ last_edited = {}
 user_choice = {}
 
 
-required_channel_usernames = ["chachabbc"]
+required_channel_usernames = ["planet_habal"]
 
 user_started = {}
 user_joined_channels = {}
