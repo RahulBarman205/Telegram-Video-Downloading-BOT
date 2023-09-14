@@ -13,7 +13,7 @@ last_edited = {}
 user_choice = {}
 
 
-required_channel_usernames = ["testblack12"]
+required_channel_usernames = ["chachabbc"]
 
 user_started = {}
 user_joined_channels = {}
@@ -21,18 +21,14 @@ user_joined_channels = {}
 
 
 def check_channel_membership(user_id):
-    missing_channel_usernames = []
-
     for channel_username in required_channel_usernames:
         try:
             chat_member = bot.get_chat_member("@" + channel_username, user_id)
             if chat_member.status not in ["member", "administrator"]:
-                missing_channel_usernames.append("@" + channel_username)
+                return False  # User is not a member of at least one required channel
         except telebot.apihelper.ApiException as e:
             print(f"Error checking channel membership: {e}")
-            
-
-    return missing_channel_usernames
+    return True  # User is a member of all required channels
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -40,44 +36,52 @@ def start(message):
     user_id = message.from_user.id
     user_started[user_id] = True
 
-    missing_channel_usernames = check_channel_membership(user_id)
-
-    if not missing_channel_usernames:
+    if check_channel_membership(user_id):  # Check if the user is a member of all required channels
         user_joined_channels[user_id] = True
         bot.reply_to(
             message, "Send me a video or audio link (starts with http or www) and I'll download it for you, works with *YouTube*, *TikTok*, *Reddit* and more.\n\nAuthor: Tech4Sandy", parse_mode="MARKDOWN", disable_web_page_preview=True)
     else:
-        bot.reply_to(
-    message, "You must join the following channels before using other commands:\n\n" + '\n'.join(missing_channel_usernames)
-)
+        missing_channel_usernames = required_channel_usernames.copy()
+        for channel_username in required_channel_usernames:
+            try:
+                chat_member = bot.get_chat_member("@" + channel_username, user_id)
+                if chat_member.status in ["member", "administrator"]:
+                    missing_channel_usernames.remove(channel_username)
+            except telebot.apihelper.ApiException as e:
+                print(f"Error checking channel membership: {e}")
 
+        channel_links = [f"https://t.me/{channel}" for channel in missing_channel_usernames]
+        channel_links_text = "\n".join(channel_links)
+        reply_text = f"You must join the following channels before using other commands:\n\n{channel_links_text}"
+        bot.reply_to(message, reply_text, parse_mode="Markdown")
 
 
 @bot.message_handler(func=lambda message: True)
 def restrict_commands(message):
     user_id = message.from_user.id
-    if not user_started.get(user_id) or not user_joined_channels.get(user_id):
-        bot.reply_to(message, "You must run the `/start` command and join the required channels before using other commands.")
+    user_started.setdefault(user_id, False)
+
+    if user_started[user_id]:
+        user_joined_channels[user_id] = check_channel_membership(user_id)
+
+    if not user_joined_channels.get(user_id):
+        bot.reply_to(message, "You must join the required channels before using other commands. Please enter '/start' again")
     else:
         text = message.text.lower()
         if text.startswith("/download"):
-            
             if user_choice.get(user_id) == "audio":
                 download_audio_command(message)
             else:
                 download_command(message)
         elif text.startswith("/audio"):
-            
             user_choice[user_id] = "audio"
             download_audio_command(message)
         elif text.startswith("/custom"):
             custom(message)
         elif text.startswith("http") or text.startswith("www"):
-            
             if youtube_url_validation(text):
                 ask_media_format(message)
             else:
-                
                 download_command(message)
         else:
             bot.reply_to(message, "Invalid Command, Please Enter a Valid URL")
