@@ -39,7 +39,7 @@ def start(message):
     if check_channel_membership(user_id):  # Check if the user is a member of all required channels
         user_joined_channels[user_id] = True
         bot.reply_to(
-            message, "Send me a video or audio link (starts with http or www) and I'll download it for you, works with *YouTube*, *TikTok*, *Reddit* and more.\n\nAuthor: Tech4Sandy", parse_mode="MARKDOWN", disable_web_page_preview=True)
+            message, "Send me a video or audio link (starts with http or www) and I'll download it for you, works with *YouTube*, *TikTok*, *Reddit* and more.\n\nAuthor: Tech4Sandy", parse_mode="HTML", disable_web_page_preview=True)
     else:
         missing_channel_usernames = required_channel_usernames.copy()
         for channel_username in required_channel_usernames:
@@ -53,7 +53,7 @@ def start(message):
         channel_links = [f"https://t.me/{channel}" for channel in missing_channel_usernames]
         channel_links_text = "\n".join(channel_links)
         reply_text = f"You must join the following channels before using other commands:\n\n{channel_links_text}"
-        bot.reply_to(message, reply_text, parse_mode="Markdown")
+        bot.reply_to(message, reply_text, parse_mode="HTML")
 
 
 @bot.message_handler(func=lambda message: True)
@@ -141,7 +141,7 @@ def youtube_url_validation(url):
 @bot.message_handler(commands=['help'])
 def test(message):
     bot.reply_to(
-        message, "Send me a video or audio link (starts with http or www) and I'll download it for you, works with *YouTube*, *TikTok*, *Reddit* and more.\n\nAuthor: Tech4Sandy", parse_mode="MARKDOWN", disable_web_page_preview=True)
+        message, "Send me a video or audio link (starts with http or www) and I'll download it for you, works with *YouTube*, *TikTok*, *Reddit* and more.\n\nAuthor: Tech4Sandy", parse_mode="HTML", disable_web_page_preview=True)
 
 
 def download_video(message, url, audio=False, format_id="mp4"):
@@ -194,7 +194,7 @@ def download_video(message, url, audio=False, format_id="mp4"):
                     bot.delete_message(message.chat.id, msg.message_id)
                 except Exception as e:
                     bot.edit_message_text(
-                        chat_id=message.chat.id, message_id=msg.message_id, text=f"Couldn't send file, make sure it's supported by Telegram and it doesn't exceed *{round(config.max_filesize / 1000000)}MB*", parse_mode="MARKDOWN")
+                        chat_id=message.chat.id, message_id=msg.message_id, text=f"Couldn't send file, make sure it's supported by Telegram and it doesn't exceed *{round(config.max_filesize / 1000000)}MB*", parse_mode="HTML")
                     for file in info['requested_downloads']:
                         os.remove(file['filepath'])
                 else:
@@ -235,7 +235,7 @@ def download_command(message):
     text = get_text(message)
     if not text:
         bot.reply_to(
-            message, 'Invalid usage, use `/download url`', parse_mode="MARKDOWN")
+            message, 'Invalid usage, use `/download url`', parse_mode="HTML")
         return
 
     log(message, text, 'video')
@@ -247,7 +247,7 @@ def download_audio_command(message):
     text = get_text(message)
     if not text:
         bot.reply_to(
-            message, 'Invalid usage, use `/audio url`', parse_mode="MARKDOWN")
+            message, 'Invalid usage, use `/audio url`', parse_mode="HTML")
         return
 
     log(message, text, 'audio')
@@ -259,7 +259,7 @@ def custom(message):
     text = get_text(message)
     if not text:
         bot.reply_to(
-            message, 'Invalid usage, use `/custom url`', parse_mode="MARKDOWN")
+            message, 'Invalid usage, use `/custom url`', parse_mode="HTML")
         return
 
     msg = bot.reply_to(message, 'Getting formats...')
